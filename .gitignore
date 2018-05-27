@@ -1,1 +1,4 @@
 .vscode/
+.coverage
+worklog.sqlite
+*.pyc
