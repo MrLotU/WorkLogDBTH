@@ -3,7 +3,7 @@ import os
 from time import sleep
 from utils import clear, finalize
 from models import init_db
-from modules import CreateModule
+from modules import CreateModule, ViewModule
 
 MAIN_MENU = '''Worklog
 ==================
@@ -39,7 +39,10 @@ def menu():
         menu()
     elif option.upper() == 'S':
         ### Search
-        pass
+        vm = ViewModule([])
+        vm.load_entries()
+        sleep(1)
+        menu()
     elif option.upper() == 'Q':
         ### Quit
         finalize()
