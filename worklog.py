@@ -2,7 +2,8 @@ import sys
 import os
 from time import sleep
 from utils import clear, finalize
-from models.db import init_db
+from models import init_db
+from modules import CreateModule
 
 MAIN_MENU = '''Worklog
 ==================
@@ -32,7 +33,10 @@ def menu():
 
     if option.upper() == 'C':
         ### Create
-        pass
+        cm = CreateModule()
+        cm.setup()
+        sleep(1)
+        menu()
     elif option.upper() == 'S':
         ### Search
         pass
