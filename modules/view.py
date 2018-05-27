@@ -5,8 +5,10 @@ from utils import clear
 from modules import Module
 
 class ViewModule(Module):
+    """View module"""
 
     def __init__(self, entries, test=False):
+        """Initalizes ViewModule"""
         self.index = 0
         self.entries = [entry for entry in entries] if not entries is None else None
         self.test = test
@@ -26,16 +28,21 @@ Notes:
 {}\n\n'''
 
     def load_entries(self):
+        """Loads entries in ViewModule"""
+        # Clear screen
         clear()
+        # Handle if we don't have entries
         if self.entries is None:
             return
         if self.entries == []:
             print('No entries were found')
             sleep(1)
             return
+        # Get user input
         entry = self.entries[self.index]
         action = input(self.VIEW_FORMAT.format(entry.title, entry.employee, entry.time, entry.created_at, entry.notes)).upper()
 
+        # Act upon input
         if action == 'N':
             if self.index >= len(self.entries) - 1:
                 if self.test:
@@ -67,8 +74,12 @@ Notes:
             self.load_entries()
         
     def update_entry(self, entry):
+        """Updates an entry"""
+        # Clear screen
         clear()
+        # Set updated time
         updates = { 'created_at': datetime.utcnow().date() }
+        # Get and validate user input
         title = input(
             'Current title is: {}. If you want to edit, give a new title. Otherwise leave this empty\t'.format(
                 entry.title
@@ -104,7 +115,7 @@ Notes:
         )
         if not notes == '':
             updates['notes'] = notes
-        
+        # Update entry
         Entry.update(updates).where(Entry.id == entry.id).execute()
         print('Updated entry!')
         sleep(1)

@@ -5,6 +5,7 @@ from peewee import IntegrityError
 
 @BaseModel.register
 class Entry(BaseModel):
+    """Entry model"""
     title = CharField()
     employee = CharField()
     time = CharField()
@@ -13,6 +14,7 @@ class Entry(BaseModel):
 
     @classmethod
     def new(cls, title, employee, time, notes):
+        """Create new entry"""
         try:
             emp = Employee.with_name(employee)
         except IntegrityError:
@@ -21,4 +23,5 @@ class Entry(BaseModel):
         return cls.create(title=title, employee=employee, time=time, notes=notes)
 
     class Meta:
+        # Set DB table
         db_table = 'entries'

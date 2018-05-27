@@ -7,6 +7,7 @@ from utils import clear, finalize
 
 
 class SearchModule(Module):
+    """Search module"""
     SEARCH_MENU = '''Search
 ==================
 Please choose a search option from the list below:
@@ -26,10 +27,14 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
     }
 
     def __init__(self, test=False):
+        """Initializes Search module"""
         self.test = test
 
     def setup(self):
+        """Setup SearchModule for use"""
+        # Clear screen
         clear()
+        # Get user input
         option = input(self.SEARCH_MENU)
         try:
             option = self.SEARCH_OPTIONS[int(option)]
@@ -38,6 +43,7 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         except KeyError:
             option = 'UNDEFINED'
         
+        # Act upon user input
         option = option.upper()
         if option == 'Q':
             print('Returning to main menu')
@@ -68,6 +74,7 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         
 
     def get_search_date(self):
+        """Get search date from user"""
         date = input('Please give a date in the format MM/DD/YYYY\t')
         if date == 'TODAY':
             return datetime.utcnow().date()
@@ -81,18 +88,23 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         return date.date()
     
     def get_employee_name(self):
+        """Get employee name from user"""
+        # Get imput
         name = input('Please give name of the employee to search for\t')
         employees = Employee.find_by_name(name)
         employees = [employee for employee in employees]
         if employees == []:
             return None
         if len(employees) == 1:
+            # Return employee if we only got 1 match
             return employees[0].name
+        # Let the user choose an employee if we found more than 1
         print('We found multiple employees with that name. Please choose one from the list below (specify number)\n')
         inp = []
         for x, emp in enumerate(employees):
             inp.append('{}: {}'.format(x, emp.name))
         option = input('\n'.join(inp) + '\n')
+        # Validate input
         try:
             emp = employees[int(option)]
         except (IndexError, ValueError) as e:
@@ -101,9 +113,11 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
             print('Invalid option')
             sleep(1)
             return self.get_employee_name()
+        # Return employee
         return emp.name
         
     def get_time_spent(self):
+        """Get time spent from user"""
         time = input('Please give a time spent in minutes\t')
         try:
             int(time)
@@ -115,10 +129,12 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         return time
     
     def get_search_term(self):
+        """Get search term from user"""
         term = input('Please provide a search term\t')
         return term
 
     def get_date_range(self):
+        """Get date range from user"""
         start = input('Please give a start date in format MM/DD/YYYY\t')
         end = input('Please give an end date in format MM/DD/YYYY\t')
         try:

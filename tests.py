@@ -35,13 +35,16 @@ class TestCreationMethods(unittest.TestCase):
         with self.assertRaises(IntegrityError):
             Employee.with_name('John Appleseed')
         
+        ### Test create module
         create_module = CreateModule(test=True)
         mock_input = ['Kate Bell', 'Prepared BBQ', '10', 'Also prepared the salads']
         failing_input = ['Kate Bell', 'Prepared BBQ', 'not_a_number', 'Also prepared the salads']
 
+        # Positive test
         with patch('builtins.input', side_effect=mock_input):
             create_module.setup()
             self.assertEqual(len(Employee.select()), 2)
+        # Negative test
         with self.assertRaises(ValueError):
             with patch('builtins.input', side_effect=failing_input):
                 create_module.setup()
