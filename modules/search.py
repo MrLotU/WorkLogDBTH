@@ -25,6 +25,9 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         5: 'D'
     }
 
+    def __init__(self, test=False):
+        self.test = test
+
     def setup(self):
         clear()
         option = input(self.SEARCH_MENU)
@@ -58,6 +61,10 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         elif option == 'D':
             start, end = self.get_date_range()
             return query.where(Entry.created_at.between(start, end))
+        else:
+            print('Undefined option. Restarting')
+            sleep(1)
+            self.setup()
         
 
     def get_search_date(self):
@@ -67,6 +74,8 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         try:
             date = datetime.strptime(date, '%m/%d/%Y')
         except ValueError:
+            if self.test:
+                raise ValueError
             print('Invalid date!')
             return self.get_search_date()
         return date.date()
@@ -86,7 +95,9 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         option = input('\n'.join(inp) + '\n')
         try:
             emp = employees[int(option)]
-        except (KeyError, ValueError):
+        except (IndexError, ValueError) as e:
+            if self.test:
+                raise e
             print('Invalid option')
             sleep(1)
             return self.get_employee_name()
@@ -97,6 +108,8 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         try:
             int(time)
         except ValueError:
+            if self.test:
+                raise ValueError
             print('Invalid time spent. Should be a number')
             return self.get_time_spent()
         return time
@@ -109,9 +122,16 @@ Or press \033[4mQ\033[0m to go back to the main menu]\n\n'''
         start = input('Please give a start date in format MM/DD/YYYY\t')
         end = input('Please give an end date in format MM/DD/YYYY\t')
         try:
-            start = datetime.strptime(start, '%m/%d/%Y').date()
-            end = datetime.strptime(end, '%m/%d/%Y').date()
+            if start != 'TODAY':
+                start = datetime.strptime(start, '%m/%d/%Y').date()
+            if end != 'TODAY':
+                end = datetime.strptime(end, '%m/%d/%Y').date()
         except ValueError:
+            if self.test:
+                raise ValueError
             print('Invalid date(s) provided!')
             return self.get_date_range()
+        if end == 'TODAY':
+            end = datetime.utcnow().date()
+
         return start, end

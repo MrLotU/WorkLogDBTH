@@ -4,6 +4,9 @@ from utils import clear
 from time import sleep
 
 class CreateModule(Module):
+    def __init__(self, test=False):
+        self.test = test
+
     def setup(self):
         clear()
         employee = input('Please enter the name of the employee that worked on the task\t')
@@ -13,6 +16,8 @@ class CreateModule(Module):
         try:
             int(time)
         except ValueError:
+            if self.test:
+                raise ValueError
             print('Invalid time spent. Should be a number')
             sleep(1)
             self.setup()

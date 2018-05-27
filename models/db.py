@@ -16,3 +16,10 @@ class BaseModel(Model):
 def init_db():
     for model in MODELS:
         model.create_table(True)
+
+def reset_db():
+    init_db()
+    for model in MODELS:
+        model.drop_table(True)
+        model.create_table(True)
+    

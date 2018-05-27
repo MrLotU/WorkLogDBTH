@@ -2,3 +2,4 @@
 .coverage
 worklog.sqlite
 *.pyc
+htmlcov/

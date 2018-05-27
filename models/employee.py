@@ -1,5 +1,5 @@
 from models import BaseModel
-from peewee import CharField
+from peewee import CharField, IntegrityError
 
 @BaseModel.register
 class Employee(BaseModel):
@@ -12,6 +12,9 @@ class Employee(BaseModel):
 
     @classmethod
     def with_name(cls, name):
+        employees_with_name = cls.find_by_name(name)
+        if len(employees_with_name) > 0:
+            raise IntegrityError # User already exists
         if not ' ' in name:
             return cls.create(first=name)
         (first, last) = name.split(' ')
@@ -19,14 +22,17 @@ class Employee(BaseModel):
 
     @classmethod
     def find_by_name(cls, name):
-        form = '{}'
-        for emp in Employee.select():
-            print(emp.name)
-            print(form.format(emp.name).lower())
-        employees = Employee.select().where(
-            (Employee.first.contains(name)) |
-            (Employee.last.contains(name))
-        )
+        if not ' ' in name:
+            first = name
+            employees = Employee.select().where(
+                (Employee.first == first)
+            )
+        else:
+            first, last = name.split(' ')
+            employees = Employee.select().where(
+                (Employee.first == first) &
+                (Employee.last == last)
+            )
         return employees
 
     class Meta:

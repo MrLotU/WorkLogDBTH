@@ -6,9 +6,10 @@ from modules import Module
 
 class ViewModule(Module):
 
-    def __init__(self, entries):
+    def __init__(self, entries, test=False):
         self.index = 0
         self.entries = [entry for entry in entries] if not entries is None else None
+        self.test = test
     
     VIEW_FORMAT = '''Viewing entries
 ==================
@@ -37,6 +38,8 @@ Notes:
 
         if action == 'N':
             if self.index >= len(self.entries) - 1:
+                if self.test:
+                    raise IndexError
                 print('Already viewing last entry')
                 sleep(1)
             else:
@@ -44,6 +47,8 @@ Notes:
             self.load_entries()
         elif action == 'P':
             if self.index == 0:
+                if self.test:
+                    raise IndexError
                 print('Already viewing first entry')
                 sleep(1)
             else:
@@ -55,7 +60,7 @@ Notes:
         elif action == 'Q':
             print('Returning to main menu')
             sleep(1)
-            return
+            return None
         else:
             print('Invalid option. Restarting')
             sleep(1)
@@ -87,6 +92,8 @@ Notes:
             try:
                 int(time)
             except ValueError:
+                if self.test:
+                    raise ValueError
                 print('Invalid time provided. Not changing the value')
             else:
                 updates['time'] = time
