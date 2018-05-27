@@ -1,14 +1,24 @@
-from models import BaseModel
-from peewee import TextField, CharField, IntegerField, DateTimeField
+from models import BaseModel, Employee
+from peewee import TextField, CharField, DateField
 from datetime import datetime
+from peewee import IntegrityError
 
 @BaseModel.register
 class Entry(BaseModel):
     title = CharField()
     employee = CharField()
-    time = IntegerField
+    time = CharField()
     notes = TextField()
-    created_at = DateTimeField(default=datetime.utcnow())
+    created_at = DateField(default=datetime.utcnow().date())
+
+    @classmethod
+    def new(cls, title, employee, time, notes):
+        try:
+            emp = Employee.with_name(employee)
+        except IntegrityError:
+            emp = Employee.find_by_name(employee)[0]
+        employee = emp.name
+        return cls.create(title=title, employee=employee, time=time, notes=notes)
 
     class Meta:
         db_table = 'entries'

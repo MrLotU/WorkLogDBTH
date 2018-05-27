@@ -8,8 +8,7 @@ class ViewModule(Module):
 
     def __init__(self, entries):
         self.index = 0
-        self.entries = [entry for entry in Entry.select()]
-        # self.entries = entries
+        self.entries = [entry for entry in entries] if not entries is None else None
     
     VIEW_FORMAT = '''Viewing entries
 ==================
@@ -27,6 +26,8 @@ Notes:
 
     def load_entries(self):
         clear()
+        if self.entries is None:
+            return
         if self.entries == []:
             print('No entries were found')
             sleep(1)
@@ -53,6 +54,7 @@ Notes:
             self.update_entry(entry)
         elif action == 'Q':
             print('Returning to main menu')
+            sleep(1)
             return
         else:
             print('Invalid option. Restarting')
@@ -61,7 +63,7 @@ Notes:
         
     def update_entry(self, entry):
         clear()
-        updates = { 'created_at': datetime.utcnow() }
+        updates = { 'created_at': datetime.utcnow().date() }
         title = input(
             'Current title is: {}. If you want to edit, give a new title. Otherwise leave this empty\t'.format(
                 entry.title
@@ -98,3 +100,4 @@ Notes:
         
         Entry.update(updates).where(Entry.id == entry.id).execute()
         print('Updated entry!')
+        sleep(1)

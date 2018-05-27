@@ -1,6 +1,7 @@
 from modules import Module
 from models import Entry
 from utils import clear
+from time import sleep
 
 class CreateModule(Module):
     def setup(self):
@@ -13,9 +14,10 @@ class CreateModule(Module):
             int(time)
         except ValueError:
             print('Invalid time spent. Should be a number')
+            sleep(1)
             self.setup()
         self.create_entry(employee=employee, title=title, time=time, notes=notes)
         print('Created entry')
 
     def create_entry(self, **kwargs):
-        return Entry.create(**kwargs)
+        return Entry.new(**kwargs)
